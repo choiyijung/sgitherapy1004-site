@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sgitherapy1004.shop/sitemap.xml
