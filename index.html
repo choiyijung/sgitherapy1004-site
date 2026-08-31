@@ -765,4 +765,57 @@ footer strong{color:#ffd23b!important}
 </section>
 <!-- RY-LONGTEXT-END -->
 <footer><strong>서울 · 경기 · 인천 지역 안내</strong><br>수도권 주요 지역부터 동·읍·면까지 필요한 지역 정보를 단계별로 확인할 수 있습니다.<br>원하는 지역과 이용 내용을 확인한 뒤 편리하게 문의하세요.</footer>
+<!-- COMPANY-SHUFFLE-START -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const cards = Array.from(document.querySelectorAll('.company-card'));
+  if (cards.length < 2) return;
+
+  const groups = new Map();
+
+  cards.forEach(function(card){
+    const parent = card.parentElement;
+    if (!groups.has(parent)) groups.set(parent, []);
+    groups.get(parent).push(card);
+  });
+
+  let groupIndex = 0;
+
+  groups.forEach(function(groupCards, parent){
+    if (groupCards.length < 2) return;
+
+    const original = groupCards.slice();
+    const key = 'company-shuffle:' + location.pathname + ':' + groupIndex;
+    groupIndex++;
+
+    let order = original.map(function(_, i){ return i; });
+    let previous = '';
+
+    try {
+      previous = localStorage.getItem(key) || '';
+    } catch(e) {}
+
+    let tries = 0;
+
+    do {
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = order[i];
+        order[i] = order[j];
+        order[j] = temp;
+      }
+      tries++;
+    } while (order.join(',') === previous && tries < 20);
+
+    order.forEach(function(i){
+      parent.appendChild(original[i]);
+    });
+
+    try {
+      localStorage.setItem(key, order.join(','));
+    } catch(e) {}
+  });
+});
+</script>
+<!-- COMPANY-SHUFFLE-END -->
 </body></html>
